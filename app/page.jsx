@@ -1,7 +1,7 @@
 // page.jsx
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Player from "./classes/Player";
 import Ground from "./classes/Ground";
 import CactiController from "./classes/CactiController";
@@ -38,6 +38,7 @@ const Home = () => {
     let ground = null;
     let cactiController = null;
     let score = null;
+    let scoreObj = null;
 
     let scaleRatio = null;
     let previousTime = null;
@@ -223,11 +224,7 @@ const Home = () => {
   return (
     <div className="flex flex-col w-full h-screen justify-center items-center select-none touch-none">
       <div className=""></div>
-      <canvas
-        id="game"
-        className="m-0 p-0"
-        ref={canvasRef}
-      ></canvas>
+      <canvas id="game" className="m-0 p-0 border-y" ref={canvasRef}></canvas>
     </div>
   );
 };

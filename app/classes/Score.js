@@ -20,6 +20,7 @@ export default class Score {
     const highScore = Number(localStorage.getItem(this.HIGH_SCORE_KEY));
     if (this.score > highScore) {
       localStorage.setItem(this.HIGH_SCORE_KEY, Math.floor(this.score));
+      console.log("New high score!");
     }
   }
 
