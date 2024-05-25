@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import Player from "./classes/Player";
 import Ground from "./classes/Ground";
 import CactiController from "./classes/CactiController";
+import Score from "./classes/Score";
 
 const Home = () => {
   const canvasRef = useRef(null);
@@ -13,8 +14,8 @@ const Home = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
-    const GAME_SPEED_START = 0.75; // 1.0
-    const GAME_SPEED_INCREMENT = 0.00001;
+    const GAME_SPEED_START = 1; // 1.0
+    const GAME_SPEED_INCREMENT = 0.000015;
 
     const GAME_WIDTH = 800;
     const GAME_HEIGHT = 200;
@@ -36,11 +37,14 @@ const Home = () => {
     let player = null;
     let ground = null;
     let cactiController = null;
+    let score = null;
 
     let scaleRatio = null;
     let previousTime = null;
     let gameSpeed = GAME_SPEED_START;
     let gameOver = false;
+    let hasAddedEventListenersForRestart = false;
+    let waitingToStart = true;
 
     function createSprites() {
       const playerWidthInGame = PLAYER_WIDTH * scaleRatio;
@@ -84,6 +88,8 @@ const Home = () => {
         scaleRatio,
         GROUND_AND_CACTUS_SPEED
       );
+
+      score = new Score(ctx, scaleRatio);
     }
 
     function setScreen() {
@@ -116,6 +122,49 @@ const Home = () => {
       }
     }
 
+    function showGameOver() {
+      const fontSize = 70 * scaleRatio;
+      ctx.font = `${fontSize}px Verdana`;
+      ctx.fillStyle = "grey";
+      const x = canvas.width / 4.5;
+      const y = canvas.height / 2;
+      ctx.fillText("Game Over", x, y);
+    }
+
+    function setupGameReset() {
+      if (!hasAddedEventListenersForRestart) {
+        hasAddedEventListenersForRestart = true;
+
+        setTimeout(() => {
+          window.addEventListener("keyup", reset, { once: true });
+          window.addEventListener("touchstart", reset, { once: true });
+        }, 1000);
+      }
+    }
+
+    function reset() {
+      hasAddedEventListenersForRestart = false;
+      gameOver = false;
+      waitingToStart = false;
+      ground.reset();
+      cactiController.reset();
+      score.reset();
+      gameSpeed = GAME_SPEED_START;
+    }
+
+    function showStartGameText() {
+      const fontSize = 40 * scaleRatio;
+      ctx.font = `${fontSize}px Verdana`;
+      ctx.fillStyle = "grey";
+      const x = canvas.width / 14;
+      const y = canvas.height / 2;
+      ctx.fillText("Tap Screen or Press Space to Start", x, y);
+    }
+
+    function updateGameSpeed(frameTimeDelta) {
+      gameSpeed += GAME_SPEED_INCREMENT * frameTimeDelta;
+    }
+
     function clearScreen() {
       ctx.fillStyle = "white";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -133,27 +182,49 @@ const Home = () => {
 
       clearScreen();
 
-      // Update game objects
-      ground.update(gameSpeed, frameTimeDelta);
-      cactiController.update(gameSpeed, frameTimeDelta);
-      player.update(gameSpeed, frameTimeDelta);
+      if (!gameOver && !waitingToStart) {
+        // Update game objects
+        ground.update(gameSpeed, frameTimeDelta);
+        cactiController.update(gameSpeed, frameTimeDelta);
+        player.update(gameSpeed, frameTimeDelta);
+        score.update(frameTimeDelta);
+        updateGameSpeed(frameTimeDelta);
+      }
+
+      if (!gameOver && cactiController.collideWith(player)) {
+        gameOver = true;
+        setupGameReset();
+        score.setHighScore();
+      }
 
       // Draw game objects
       ground.draw();
       cactiController.draw();
       player.draw();
+      score.draw();
+
+      if (gameOver) {
+        showGameOver();
+      }
+
+      if (waitingToStart) {
+        showStartGameText();
+      }
 
       requestAnimationFrame(gameLoop);
     }
 
     requestAnimationFrame(gameLoop);
+
+    window.addEventListener("keyup", reset, { once: true });
+    window.addEventListener("touchstart", reset, { once: true });
   }, []);
 
   return (
     <div className="flex w-full justify-center items-center h-screen p-0 m-0 select-none touch-none">
       <canvas
         id="game"
-        className="border border-gray-300 m-0 p-0"
+        className="m-0 p-0"
         ref={canvasRef}
       ></canvas>
     </div>
