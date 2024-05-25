@@ -221,8 +221,8 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="flex flex-col w-full justify-center items-center select-none touch-none">
-      <div className="mt-24"></div>
+    <div className="flex flex-col w-full h-screen justify-center items-center select-none touch-none">
+      <div className=""></div>
       <canvas
         id="game"
         className="m-0 p-0"
