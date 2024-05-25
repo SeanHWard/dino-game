@@ -15,13 +15,13 @@ const Home = () => {
     const ctx = canvas.getContext("2d");
 
     const GAME_SPEED_START = 1; // 1.0
-    const GAME_SPEED_INCREMENT = 0.000015;
+    const GAME_SPEED_INCREMENT = 0.0000125;
 
     const GAME_WIDTH = 800;
     const GAME_HEIGHT = 200;
     const PLAYER_WIDTH = 88 / 1.5; // 58
     const PLAYER_HEIGHT = 94 / 1.5; // 62
-    const MAX_JUMP_HEIGHT = GAME_HEIGHT;
+    const MAX_JUMP_HEIGHT = 190;
     const MIN_JUMP_HEIGHT = 150;
     const GROUND_WIDTH = 2400;
     const GROUND_HEIGHT = 24;
@@ -221,7 +221,8 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="flex w-full justify-center items-center h-screen p-0 m-0 select-none touch-none">
+    <div className="flex flex-col w-full justify-center items-center select-none touch-none">
+      <div className="mt-24"></div>
       <canvas
         id="game"
         className="m-0 p-0"
