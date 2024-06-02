@@ -25,8 +25,7 @@ export default class Score {
   }
 
   draw() {
-    // const highScore = Number(localStorage.getItem(this.HIGH_SCORE_KEY));
-    const highScore = 420420;
+    const highScore = Number(localStorage.getItem(this.HIGH_SCORE_KEY));
     const y = 20 * this.scaleRatio;
 
     const fontSize = 20 * this.scaleRatio;
