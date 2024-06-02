@@ -6,7 +6,7 @@ import OverlayButton from "./components/OverlayButton";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Dino",
+  title: "Hopper",
   description: "Powered by Pluq.io",
 };
 
@@ -15,7 +15,7 @@ export default function RootLayout({ children }) {
     
       <html lang="en">
         <body className={inter.className}>
-          <Navbar />
+          {/* <Navbar /> */}
           {children}
           <OverlayButton className="mt-auto" />
         </body>
